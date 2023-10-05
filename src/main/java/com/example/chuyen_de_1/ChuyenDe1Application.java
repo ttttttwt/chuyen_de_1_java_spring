@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class ChuyenDe1Application {
-
 	public static void main(String[] args) {
 		SpringApplication.run(ChuyenDe1Application.class, args);
 	}
