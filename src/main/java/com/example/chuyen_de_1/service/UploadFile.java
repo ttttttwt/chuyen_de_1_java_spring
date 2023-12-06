@@ -1,7 +1,10 @@
 package com.example.chuyen_de_1.service;
 
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -11,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 @Service
@@ -76,7 +80,7 @@ public class UploadFile implements IUploadFile {
                 throw new RuntimeException("file must be least than 10mb");
             }
             String extension = FilenameUtils.getExtension(file.getOriginalFilename());
-            String generaName = file.getOriginalFilename();
+            String generaName = UUID.randomUUID().toString().replace("-", "");
             generaName = generaName + "." + extension;
 
             generaName = type + "/" + generaName;
@@ -100,7 +104,21 @@ public class UploadFile implements IUploadFile {
 
     @Override
     public byte[] readFileContent(String fileName) {
-        return new byte[0];
+        try {
+            Path file = rootLocation.resolve(fileName);
+            Resource resource = new UrlResource(file.toUri());
+            if (resource.exists() || resource.isReadable()) {
+                byte[] bytes = StreamUtils.copyToByteArray(resource.getInputStream());
+                return bytes;
+            }
+            else {
+                throw new RuntimeException(
+                        "Could not read file: " + fileName);
+            }
+        }
+        catch (IOException exception) {
+            throw new RuntimeException("Could not read file: " + fileName, exception);
+        }
     }
 
     @Override

@@ -68,5 +68,4 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("Error", "Can't find id of post", ""));
     }
 
-
 }

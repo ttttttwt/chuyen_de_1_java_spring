@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>Hello World!</h1>
+    <p th:text="'Hello how are you, ' + ${name} + '!'"></p>
+    <a th:href="@{/test/newpage/{name}(name=${name})}">new page</a>
+</body>
+</html>
