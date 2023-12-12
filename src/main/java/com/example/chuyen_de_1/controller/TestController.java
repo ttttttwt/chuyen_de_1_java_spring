@@ -1,36 +1,22 @@
 package com.example.chuyen_de_1.controller;
 
+import com.example.chuyen_de_1.model.ResponseObject;
+import netscape.javascript.JSObject;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.Map;
+
+@RestController
 @RequestMapping("/test")
 public class TestController {
-    @GetMapping("/hello/{name}")
-    public String hello(Model mode, @PathVariable("name") String name) {
-        mode.addAttribute("name", name);
-        return "test";
+    @GetMapping("/hello")
+    public ResponseEntity<ResponseObject> test(@RequestBody Map<String, Object> json){
+        String name = (String) json.get("name");
+        int num = (int) json.get("num");
+        return ResponseEntity.ok().body(new ResponseObject("", "hello", name + num));
     }
 
-    @GetMapping("/newpage/{name}")
-    public String newpage(@PathVariable("name") String name, Model model) {
-        model.addAttribute("name", name);
-        return "newpage";
-    }
-
-    @GetMapping("/from1")
-    public String from1(Model model) {
-        return "from1";
-    }
-
-    @GetMapping("/hello2")
-    public String hello2(@RequestParam(name = "value2") String name, Model model) {
-        System.out.println(name);
-        model.addAttribute("name", name);
-        return "hello";
-    }
 }
