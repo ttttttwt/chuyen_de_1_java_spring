@@ -51,10 +51,10 @@ UserController {
         System.out.println(isVerify);
         if (isVerify) {
             User user = tempUserService.getUser(Integer.valueOf(userId));
-            userRepository.save(user);
+            User newUser = userRepository.save(user);
             tempUserService.deleteUser(Integer.parseInt(userId));
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject("created" , "success to verify user", ""));
+            return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject("created" , "success to verify user", String.valueOf(newUser.getId())));
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseObject("error" , "error to verify user", ""));
 
