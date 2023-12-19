@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -111,11 +112,20 @@ UserController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<ResponseObject> updateUser(@PathVariable Long id, @RequestBody User user) {
-        User checkUser = userRepository.findById(id).orElse(null);
-        if (checkUser != null) {
-            checkUser.setUsername(user.getUsername());
-            checkUser.setPassword(user.getPassword());
-            return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("Success", "Update user success", userRepository.save(checkUser)));
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User existingUser = optionalUser.get();
+            if (user.getEmail() != null) {
+                existingUser.setEmail(user.getEmail());
+            }
+            if (user.getUsername() != null) {
+                existingUser.setUsername(user.getUsername());
+            }
+            if (user.getPassword() != null) {
+                existingUser.setPassword(user.getPassword());
+            }
+            User updatedUser = userRepository.save(existingUser);
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("Success", "Update user success", updatedUser));
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("Error", "Can't find id of user", ""));
     }
