@@ -4,11 +4,13 @@ import com.example.chuyen_de_1.model.Post;
 import com.example.chuyen_de_1.model.ResponseObject;
 import com.example.chuyen_de_1.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -40,6 +42,21 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("Error", "error to get post by user id", ""));
         }
         return ResponseEntity.ok(new ResponseObject("Ok", "success get post by user id", checkPost));
+    }
+
+    @GetMapping("all/likes/{sort}/{number}")
+    public ResponseEntity<ResponseObject> getAllPostBySort(@PathVariable String sort, @PathVariable(required = false) int number) {
+
+        Sort.Direction direction = sort.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        List<Post> posts = postRepository.findAll(Sort.by(direction, "likes"));
+
+        if (number > posts.size()) {
+            number = posts.size();
+        }
+
+        List<Post> sortedPosts = posts.subList(0, number);
+
+        return ResponseEntity.ok(new ResponseObject("Ok", "success get all post by sort", sortedPosts));
     }
 
     @PostMapping("/create")
